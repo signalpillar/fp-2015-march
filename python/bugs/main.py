@@ -55,7 +55,7 @@ def main(args):
     elif args.get('analyze'):
         print(dict_to_str(analyze_bugs(csv_file=args.get('<csv-file>'),
                                        coeff_file=args.get('<count-coef-file>'),
-                                       countries_file=args.get('<countries-file>'))))
+                                       regions_file=args.get('<countries-file>'))))
 
 
 def import_data(data_dir):
@@ -153,8 +153,8 @@ def read_bug_info(dat_file_path, encoding=DEFAULT_ENCODING):
 def render_to_csv(bug_info_by_name, csv_delimiter=DEFAULT_CSV_DELIMITER):
     """dict[str, dict[str, str]] -> str -> str"""
 
-    buffer = StringIO.StringIO()
-    writer = csv.writer(buffer, delimiter=csv_delimiter)
+    buffer_ = StringIO.StringIO()
+    writer = csv.writer(buffer_, delimiter=csv_delimiter)
     bug_names = []
 
     rows_by_country = collections.defaultdict(lambda: ['-'] * len(bug_info_by_name))
@@ -173,7 +173,7 @@ def render_to_csv(bug_info_by_name, csv_delimiter=DEFAULT_CSV_DELIMITER):
     writer.writerow([REGION_CELL_NAME] + bug_names)
     for country in sorted(rows_by_country):
         writer.writerow([country] + rows_by_country.get(country))
-    return buffer.getvalue()
+    return buffer_.getvalue()
 
 
 def read_csv(csv_file, delimiter=DEFAULT_CSV_DELIMITER, encoding=DEFAULT_ENCODING):
