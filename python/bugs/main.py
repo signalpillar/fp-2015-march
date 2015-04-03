@@ -25,11 +25,13 @@ import itertools as it
 import os
 import re
 import string
-import StringIO
 import sys
 
 # 3rd-party
 import docopt
+
+from six import StringIO
+from six.moves import reduce
 
 
 __version__ = "0.1"
@@ -123,7 +125,7 @@ def list_files(root_dir, ext):
 def dict_to_str(dict_, pair_format="{key}: {value}", pairs_separator='\n'):
     return pairs_separator.join(
         pair_format.format(key=key_, value=value)
-        for key_, value in dict_.viewitems()
+        for key_, value in dict_.items()
     )
 
 
@@ -220,14 +222,14 @@ def read_mapping_files(path, encoding=DEFAULT_ENCODING):
 
 def walk_tree(tree):
     """dict[N, dict[K, V]] -> Generator[tuple[N, K, V]]"""
-    for n, sub_tree in tree.iteritems():
-        for k, v in sub_tree.iteritems():
+    for n, sub_tree in tree.items():
+        for k, v in sub_tree.items():
             yield n, k, v
 
 
 def reducer(accumulator_fn, bug_info_by_name):
     """(tuple -> dict[str, int] -> dict[str, int]) -> dict[str, dict[str, str]] -> dict[str, int]"""
-    return reduce(
+  return reduce(
         accumulator_fn,
         walk_tree(bug_info_by_name),
         collections.defaultdict(int))
